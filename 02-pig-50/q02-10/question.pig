@@ -10,3 +10,9 @@ fs -rm -f -r output;
 -- 
 
 
+table = LOAD 'data.tsv' USING PigStorage('\t')
+  AS (letter: CHARARRAY, myDate: CHARARRAY, id: INT);
+
+grouped = ORDER table BY letter,id;
+
+STORE grouped INTO 'output';
