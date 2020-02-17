@@ -27,3 +27,25 @@ fs -rm -f -r output;
 -- 
 --  >>> Escriba su respuesta a partir de este punto <<<
 -- 
+
+table = LOAD 'truck_event_text_partition.csv' USING PigStorage(',')
+  AS (driverId: INT,
+      truckId: INT,
+      eventTime: CHARARRAY,
+      eventType: CHARARRAY,
+      longitude: DOUBLE,
+      latitude: DOUBLE,
+      eventKey: CHARARRAY,
+      correlationId: CHARARRAY,
+      driverName: CHARARRAY,
+      routeId: BIGINTEGER,
+      routeName: CHARARRAY,
+      eventDate: CHARARRAY);
+
+table_filtered = FOREACH table GENERATE CONCAT((CHARARRAY)driverId, ',', (CHARARRAY)truckId, ',', eventTime) as ld;
+
+table_limited = LIMIT table_filtered 10;
+
+result = ORDER table_limited BY ld;
+
+STORE result INTO 'output';
