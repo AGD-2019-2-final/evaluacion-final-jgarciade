@@ -14,3 +14,13 @@ fs -rm -f -r output;
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+table = LOAD 'data.tsv' USING PigStorage('\t') AS (letter: CHARARRAY, myJson: BAG{t:(p:CHARARRAY)}, myList: MAP[]);
+
+table_filtered = FOREACH table GENERATE FLATTEN(myJson), FLATTEN(myList);
+
+grouped = GROUP table_filtered BY ($0, $1);
+
+result = FOREACH grouped GENERATE group, COUNT(table_filtered);
+
+STORE result INTO 'output';
