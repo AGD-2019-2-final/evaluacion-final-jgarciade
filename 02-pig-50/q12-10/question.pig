@@ -33,3 +33,11 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+table = LOAD 'data.csv' USING PigStorage(',') AS (row: CHARARRAY, name: CHARARRAY, lastname: CHARARRAY, myDate: DATETIME, color: CHARARRAY, id: CHARARRAY);
+
+filtered = FOREACH table GENERATE lastname;
+
+result = FILTER filtered BY ($0 matches '^[D-K].*');
+
+STORE result INTO 'output' using PigStorage(',');
