@@ -38,3 +38,11 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+table = LOAD 'data.csv' USING PigStorage(',') AS (row: CHARARRAY, name: CHARARRAY, lastname: CHARARRAY, myDate: DATETIME, color: CHARARRAY, id: CHARARRAY);
+
+transformed = FOREACH table GENERATE lastname, UPPER(lastname), LOWER(lastname);
+
+result = ORDER transformed BY $0;
+
+STORE result INTO 'output' using PigStorage(',');
