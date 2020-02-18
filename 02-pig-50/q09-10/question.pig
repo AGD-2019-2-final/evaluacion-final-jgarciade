@@ -28,4 +28,8 @@
 fs -rm -f -r output;
 --
 
+table = LOAD 'data.csv' USING PigStorage(',') AS (row: CHARARRAY, name: CHARARRAY, lastname: CHARARRAY, myDate: DATETIME, color: CHARARRAY, id: CHARARRAY);
 
+result = FOREACH table GENERATE CONCAT(name, '@', lastname);
+
+STORE result INTO 'output';
