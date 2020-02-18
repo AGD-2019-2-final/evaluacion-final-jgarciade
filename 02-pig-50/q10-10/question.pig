@@ -26,3 +26,13 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+table = LOAD 'data.csv' USING PigStorage(',') AS (row: CHARARRAY, name: CHARARRAY, lastname: CHARARRAY, myDate: DATETIME, color: CHARARRAY, id: CHARARRAY);
+
+filtered = FOREACH table GENERATE lastname, SIZE(lastname);
+
+temp = ORDER filtered BY $1 DESC,$0;
+
+result = LIMIT temp 5;
+
+STORE result INTO 'output' using PigStorage(',');
