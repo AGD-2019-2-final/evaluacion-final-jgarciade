@@ -27,3 +27,12 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+
+table = LOAD 'data.csv' USING PigStorage(',') AS (row: CHARARRAY, name: CHARARRAY, lastname: CHARARRAY, myDate: DATETIME, color: CHARARRAY, id: CHARARRAY);
+
+filtered = FOREACH table GENERATE name, color;
+
+result = FILTER filtered BY (NOT $1 matches '.*blue.*') AND (NOT $1 matches '.*black.*');
+
+STORE result INTO 'output' using PigStorage(',');
