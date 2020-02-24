@@ -27,3 +27,14 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+
+table = LOAD 'data.csv' USING PigStorage(',') AS (row: CHARARRAY, name: CHARARRAY, lastname: CHARARRAY, myDate: CHARARRAY, color: CHARARRAY, id: CHARARRAY);
+
+filtered = FOREACH table GENERATE name;
+
+temp_filtered = FILTER filtered BY SUBSTRING($0, 0, 1) >= 'M';
+
+result = FOREACH temp_filtered GENERATE $0;
+
+STORE result INTO 'output' using PigStorage(',');
