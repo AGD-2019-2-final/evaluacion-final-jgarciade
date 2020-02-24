@@ -24,3 +24,21 @@ LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE t0;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS result;
+
+CREATE TABLE result
+AS
+    SELECT
+        key, count(1)
+    FROM
+        t0
+    LATERAL VIEW
+        explode(c3) t0
+    GROUP BY
+        key;
+
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM result;
+
+!hdfs dfs -copyToLocal /tmp/output output

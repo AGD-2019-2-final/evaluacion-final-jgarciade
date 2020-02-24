@@ -40,3 +40,31 @@ LOAD DATA LOCAL INPATH 'tbl1.csv' INTO TABLE tbl1;
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS tabla1;
+DROP TABLE IF EXISTS result;
+
+CREATE TABLE tabla1
+AS
+    SELECT
+        year(c4) AS ano,
+        letra
+    FROM
+        tbl0
+    LATERAL VIEW
+        explode(c5) tbl0 AS letra;
+        
+CREATE TABLE result
+AS
+    SELECT ano, letra, count(2) AS num
+    FROM
+        tabla1
+GROUP BY
+    letra, ano
+ORDER BY
+    ano, letra;
+    
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM result;
+
+!hdfs dfs -copyToLocal /tmp/output output

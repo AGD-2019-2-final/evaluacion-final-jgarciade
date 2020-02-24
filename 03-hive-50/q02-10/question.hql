@@ -11,3 +11,26 @@
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+DROP TABLE IF EXISTS data;
+DROP TABLE IF EXISTS ordenado;
+
+CREATE TABLE data (
+    c1 STRING,
+    c2 STRING,
+    c3 INT)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+LINES TERMINATED BY '\n';
+LOAD DATA LOCAL INPATH 'data.tsv' INTO TABLE data;
+
+CREATE TABLE ordenado
+AS
+    SELECT * FROM data
+ORDER BY
+    c1, c3, c2;
+    
+INSERT OVERWRITE DIRECTORY '/tmp/output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT * FROM ordenado;
+
+!hdfs dfs -copyToLocal /tmp/output output
