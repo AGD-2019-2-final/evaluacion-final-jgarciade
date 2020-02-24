@@ -40,3 +40,23 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+
+table = LOAD 'data.csv' USING PigStorage(',') AS (row: CHARARRAY, name: CHARARRAY, lastname: CHARARRAY, myDate: CHARARRAY, color: CHARARRAY, id: CHARARRAY);
+
+result = FOREACH table GENERATE myDate,CASE SUBSTRING(myDate, 5, 7)
+                                WHEN '01' THEN 'ene'
+                                WHEN '02' THEN 'feb'
+                                WHEN '03' THEN 'mar'
+                                WHEN '04' THEN 'abr'
+                                WHEN '05' THEN 'may'
+                                WHEN '06' THEN 'jun'
+                                WHEN '07' THEN 'jul'
+                                WHEN '08' THEN 'ago'
+                                WHEN '09' THEN 'sep'
+                                WHEN '10' THEN 'oct'
+                                WHEN '11' THEN 'nov'
+                                WHEN '12' THEN 'dic'
+                                END;
+
+STORE result INTO 'output' using PigStorage(',');

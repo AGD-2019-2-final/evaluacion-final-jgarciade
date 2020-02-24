@@ -20,3 +20,10 @@ u = LOAD 'data.csv' USING PigStorage(',')
 --
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
+
+ans = FOREACH u GENERATE SUBSTRING(birthday,0,4) as year;
+groups = GROUP ans BY year;
+ans = FOREACH groups GENERATE group,COUNT(ans);
+
+
+STORE ans INTO 'output' USING PigStorage(',');

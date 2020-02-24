@@ -41,3 +41,24 @@ u = LOAD 'data.csv' USING PigStorage(',')
 -- >>> Escriba su respuesta a partir de este punto <<<
 --
 
+todate = FOREACH u GENERATE birthday,ToDate(birthday,'yyyy-MM-dd') AS bdate;
+ans = FOREACH todate GENERATE birthday, ToString(bdate,'dd'),ToString(bdate,'d'),
+                              (CASE ToString(bdate,'EEE')
+                                              WHEN 'Mon' THEN 'lun'
+                                              WHEN 'Tue' THEN 'mar'
+                                              WHEN 'Wed' THEN 'mie'
+                                              WHEN 'Thu' THEN 'jue'
+                                              WHEN 'Fri' THEN 'vie'
+                                              WHEN 'Sat' THEN 'sab'
+                                              WHEN 'Sun' THEN 'dom' END),
+                              (CASE ToString(bdate,'EEE') 
+                                              WHEN 'Mon' THEN 'lunes'
+                                              WHEN 'Tue' THEN 'martes'
+                                              WHEN 'Wed' THEN 'miercoles'
+                                              WHEN 'Thu' THEN 'jueves'
+                                              WHEN 'Fri' THEN 'viernes'
+                                              WHEN 'Sat' THEN 'sabado'
+                                              WHEN 'Sun' THEN 'domingo' END);
+
+STORE ans INTO 'output' USING PigStorage(',');
+
